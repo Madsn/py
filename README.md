@@ -29,21 +29,20 @@
   * [Erlang](#erlang-)
 * [Architecture](#architecture-)
   * [Overview](#overview-)
-  * [Erlang Components](#erlang-components-)
-  * [Python Components](#python-components-)
+  * OTP for LFE py
+  * Configuration
+  * Erlang/OTP components of LFE py
+  * Python components of LFE py
 * [Controlling the Python Servers](#controlling-the-python-servers-)
   * Start, Stop, and Restart
   * Dynamically Adding More Python Servers
   * Automatic Restarts
   * Python Server Schedulers
-  * Erlang Configuration
-  * Python Configuration
-* [Executing Code in Parallel](#executing-code-in-parallel-)
-  * Identical Calls
-  * Scatter/Gather
+  * Configuring Python Servers
 * [Distributed Python](#distributed-python-)
   * Starting Remote Python Servers
   * Executing Python on Remote Servers
+  * Executing Code in Parallel
 
 ## Introduction [&#x219F;](#table-of-contents)
 
@@ -58,7 +57,7 @@ This project provides two key features:
     * Call object methods
     * Get object attributes
     * Call builtins and operators with convenient wrappers
-1. A means of running Python in a simnple distributed context using all the
+1. A means of running Python in a simple distributed context using all the
    well-known strengths of Erlang (fault-tolerance, scalability,
    concurrency, soft real-time, etc.).
 
@@ -159,7 +158,7 @@ The following sub-sections describe module-level operations.
 #("datetime" #(2014 12 23 16 57 11 693773 undefined))
 ```
 
-Note that strings in arguements need to be converted to binary:
+Note that strings in arguments need to be converted to binary:
 
 ```cl
 > (py:func 'os.path 'isfile '(#b("/tmp")))
@@ -186,7 +185,7 @@ a binary) which represents a binary number. We'll give ``int`` the keyword of
 3.141592653589793
 ```
 
-Optionaly, you may provide a type:
+Optionally, you may provide a type:
 
 ```cl
 > (py:const 'math 'pi 'float)
@@ -458,8 +457,8 @@ builtin has been aliased to the ``pylist`` function, e.g.:
 complete results that are longer than 28 elements. If you wish to see
 everything, you may call ``(py:pdir)`` and ``(py:pvars)``, respectively.
 
-``(py:repr)`` provides wrappingn for the Python builtin ``repr``. If you would
-like to see a representation of the pickeled Python data in LFE, you may use
+``(py:repr)`` provides wrapping for the Python builtin ``repr``. If you would
+like to see a representation of the pickled Python data in LFE, you may use
 the ``(py:prepr)`` function.
 
 
@@ -614,8 +613,7 @@ true
 
 ## Architecture [&#x219F;](#table-of-contents)
 
-
-### Overview [&#x219F;](#table-of-contents)
+### Overview
 
 Here is a high-level diagram of the LFE py architecture:
 
@@ -647,10 +645,7 @@ Here is a high-level diagram of the LFE py architecture:
 +-------------------------------------------+
 ```
 
-Each py Worker is actually a wrapper for an ErlPort ``gen_server`` which starts
-up Python interpreter. LFE py is only designed to work with Python 3. Both
-ErlPort and it provide Python 3 modules for use in the interpreters started
-by the workers. They have the following conceptual structure:
+Each py Worker is actually an ErlPort Python server:
 
 ```
 +----------------+
@@ -670,15 +665,15 @@ by the workers. They have the following conceptual structure:
 +----------------+
 ```
 
-As depcited above, when the LFE py/ErlPort Python server starts, it brings up
+As depicted above, when the LFE py/ErlPort Python server starts, it brings up
 a Python 3 interpreter. LFE py configures the ``PYTHONPATH`` for
 ErlPort so that the custom encoder, decoder, and object helper Python modules
 are available for use by all Python calls issued to the workers.
 
 
-### Erlang Components [&#x219F;](#table-of-contents)
+### Erlang Components
 
-Working our way up from the digram, here are references for Erlang/OTP
+Working our way up from the diagram, here are references for Erlang/OTP
 components of LFE py:
 
 * [Erlang/OTP](http://learnyousomeerlang.com/what-is-otp)
@@ -689,8 +684,7 @@ components of LFE py:
 * [py-app](https://github.com/lfex/py/blob/master/src/py-sup.lfe)
 * [py Workers](https://github.com/lfex/py/blob/master/src/py.lfe#L7)
 
-
-### Python Components [&#x219F;](#table-of-contents)
+### Python Components
 
 And here are references for the Python components in LFE py:
 
@@ -701,30 +695,33 @@ And here are references for the Python components in LFE py:
 * [py Decoders](https://github.com/lfex/py/blob/master/python/lfe/decoders.py)
 
 
+### OTP for LFE py
+
+### Configuration
+
+### Erlang/OTP components of LFE py
+
+### Python components of LFE py
+
+
+* ErlPort
+  * OTP for LFE py
+  * Configuration
+  * Erlang/OTP components of LFE py
+  * Python components of LFE py
+
 ## Controlling the Python Servers [&#x219F;](#table-of-contents)
 
-### Start, Stop, and Restart [&#x219F;](#table-of-contents)
+###  Start, Stop, and Restart
 
-### Dynamically Adding More Python Servers [&#x219F;](#table-of-contents)
+###  Dynamically Adding More Python Servers
 
-### Automatic Restarts [&#x219F;](#table-of-contents)
+###  Configuring Python Servers
 
-### Python Server Schedulers [&#x219F;](#table-of-contents)
-
-### Erlang Configuration [&#x219F;](#table-of-contents)
-
-### Python Configuration [&#x219F;](#table-of-contents)
-
-
-## Executing Code in Parallel [&#x219F;](#table-of-contents)
-
-### Identical Calls [&#x219F;](#table-of-contents)
-
-### Scatter/Gather [&#x219F;](#table-of-contents)
+###  Automatic Restarts
 
 
 ## Distributed Python [&#x219F;](#table-of-contents)
 
-### Starting Remote Python Servers [&#x219F;](#table-of-contents)
+TBD
 
-### Executing Python on Remote Servers [&#x219F;](#table-of-contents)
